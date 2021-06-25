@@ -2,24 +2,39 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 )
 
-func process(w http.ResponseWriter, r *http.Request) {
-	file, _, err := r.FormFile("uploaded")
-	if err == nil {
-		data, err := ioutil.ReadAll(file)
-		if err == nil {
-			fmt.Fprintln(w, string(data))
-		}
+func setCookie(w http.ResponseWriter, r *http.Request) {
+	c1 := http.Cookie{
+		Name:     "first_cookie",
+		Value:    "Go Web Pro",
+		HttpOnly: true,
 	}
+	c2 := http.Cookie{
+		Name:     "second_cookie",
+		Value:    "Go Web Pro",
+		HttpOnly: true,
+	}
+	http.SetCookie(w, &c1)
+	http.SetCookie(w, &c2)
+}
+
+func getCookie(w http.ResponseWriter, r *http.Request) {
+	c1, err := r.Cookie("first_cookie")
+	if err != nil {
+		fmt.Println("Cannot get cookie")
+	}
+	cs := r.Cookies()
+	fmt.Fprintln(w, c1)
+	fmt.Fprintln(w, cs)
 }
 
 func main() {
 	server := http.Server{
 		Addr: "127.0.0.1:8080",
 	}
-	http.HandleFunc("/process", process)
+	http.HandleFunc("/set_cookie", setCookie)
+	http.HandleFunc("/get_cookie", getCookie)
 	server.ListenAndServe()
 }
