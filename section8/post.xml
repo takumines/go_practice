@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<post id="1">
+  <content>Hello World!</content>
+  <author id="2">takumi kurogi</author>
+  <comments>
+    <comment id="1">
+      <content>Have a great Day</content>
+      <author id="3">admin</author>
+    </comment>
+    <comments id="2">
+      <comment>Have a test</comment>
+      <author id="4">jhon</author>
+    </comments>
+  </comments>
+</post>
