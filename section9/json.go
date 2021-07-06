@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 )
 
@@ -26,33 +25,37 @@ type Comment struct {
 }
 
 func main() {
-	jsonFile, err := os.Open("post.json")
+	post := Post{
+		Id:      1,
+		Content: "Hello World!",
+		Author: Author{
+			Id:   2,
+			Name: "takumi kurogi",
+		},
+		Comments: []Comment{
+			Comment{
+				Id:      3,
+				Content: "Have a great Day",
+				Author:  "admin",
+			},
+			Comment{
+				Id:      4,
+				Content: "How are you Today",
+				Author:  "jhon",
+			},
+		},
+	}
+
+	jsonFile, err := os.Create("postA.json")
 	if err != nil {
-		fmt.Println("Error opening Json file:", err)
+		fmt.Println("Error creating Json file:", err)
 		return
 	}
-	defer jsonFile.Close()
 
-	// jsonData, err := ioutil.ReadAll(jsonFile)
-	// if err != nil {
-	// 	fmt.Println("Error reading Json file:", err)
-	// 	return
-	// }
-
-	// var post Post
-	// json.Unmarshal(jsonData, &post)
-	// fmt.Println(post)
-	decoder := json.NewDecoder(jsonFile)
-	for {
-		var post Post
-		err := decoder.Decode(&post)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Println("Error decoding Json:", err)
-			return
-		}
-		fmt.Println(post)
+	encoder := json.NewEncoder(jsonFile)
+	err = encoder.Encode(&post)
+	if err != nil {
+		fmt.Println("Error encoding Json to file", err)
+		return
 	}
 }
