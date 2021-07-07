@@ -1,15 +1,18 @@
 package models
 
-import "github.com/takumines/go_practice/sample-api/db"
+import (
+	"gorm.io/gorm"
+)
 
 type Post struct {
-	Id      int    `json:"id"`
-	Content string `json:"content"`
-	Author  string `json:"author"`
+	gorm.Model
+	Content  string    `json:"content"`
+	Author   string    `json:"author"`
+	Comments []Comment `json:"comments" gorm:"foreignKey:PostID"`
 }
 
-func All() (posts []Post, err error) {
-	rows, err := db.DB.Find(&posts).Rows()
+func All(db *gorm.DB) (posts []Post, err error) {
+	rows, err := db.Find(&posts).Rows()
 	if err != nil {
 		return
 	}
@@ -17,8 +20,8 @@ func All() (posts []Post, err error) {
 	return
 }
 
-func Retrieve(id int) (post Post, err error) {
+func Retrieve(id int, db *gorm.DB) (post Post, err error) {
 	post = Post{}
-	err = db.DB.First(&post, id).Error
+	err = db.First(&post, id).Error
 	return
 }
