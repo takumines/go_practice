@@ -3,6 +3,7 @@ module go_practice
 go 1.15
 
 require (
+	github.com/gin-gonic/gin v1.7.2
 	github.com/jackc/pgproto3/v2 v2.1.0 // indirect
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/lib/pq v1.10.2
