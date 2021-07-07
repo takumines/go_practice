@@ -8,3 +8,18 @@ type Comment struct {
 	Content string `json:"content"`
 	Author  string `json:"author"`
 }
+
+func CommentAll(post *Post, db *gorm.DB) (comments []Comment, err error) {
+	rows, err := db.Where(&Comment{PostID: post.ID}).Find(&comments).Rows()
+	if err != nil {
+		return
+	}
+	rows.Close()
+	return
+}
+
+func CommentGet(id int, post *Post, db *gorm.DB) (comment Comment, err error) {
+	comment = Comment{}
+	err = db.Where(&Comment{PostID: post.ID}).First(&comment, id).Error
+	return
+}

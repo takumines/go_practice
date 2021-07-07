@@ -11,7 +11,7 @@ type Post struct {
 	Comments []Comment `json:"comments" gorm:"foreignKey:PostID"`
 }
 
-func All(db *gorm.DB) (posts []Post, err error) {
+func PostAll(db *gorm.DB) (posts []Post, err error) {
 	rows, err := db.Find(&posts).Rows()
 	if err != nil {
 		return
@@ -20,7 +20,7 @@ func All(db *gorm.DB) (posts []Post, err error) {
 	return
 }
 
-func Retrieve(id int, db *gorm.DB) (post Post, err error) {
+func PostGet(id int, db *gorm.DB) (post Post, err error) {
 	post = Post{}
 	err = db.First(&post, id).Error
 	return

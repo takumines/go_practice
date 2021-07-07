@@ -4,19 +4,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gin-gonic/gin"
 	"github.com/takumines/go_practice/sample-api/db"
 	"github.com/takumines/go_practice/sample-api/models"
-
-	"github.com/gin-gonic/gin"
 )
 
-func IndexPost(c *gin.Context) {
-	posts, _ := models.PostAll(db.DB)
-
-	c.JSON(http.StatusOK, posts)
-}
-
-func ShowPost(c *gin.Context) {
+func IndexComment(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("post_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -31,29 +24,45 @@ func ShowPost(c *gin.Context) {
 		})
 		return
 	}
-
-	c.JSON(http.StatusOK, post)
+	comments, _ := models.CommentAll(&post, db.DB)
+	c.JSON(http.StatusOK, comments)
 }
 
-func CreatePost(c *gin.Context) {
-	post := models.Post{}
-	if err := c.Bind(&post); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err,
-		})
-		return
-	}
-	err := db.DB.Create(&post).Error
+func ShowComment(c *gin.Context) {
+	postId, err := strconv.Atoi(c.Param("post_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
 		})
 		return
 	}
-	c.JSON(http.StatusOK, post)
+	commentId, err := strconv.Atoi(c.Param("comment_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	post, err := models.PostGet(postId, db.DB)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+
+	comment, err := models.CommentGet(commentId, &post, db.DB)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, comment)
 }
 
-func UpdatePost(c *gin.Context) {
+func CreateComment(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("post_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -68,45 +77,19 @@ func UpdatePost(c *gin.Context) {
 		})
 		return
 	}
-	if err := c.Bind(&post); err != nil {
+	comment := models.Comment{PostID: post.ID}
+	if err := c.Bind(&comment); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
 		})
 		return
 	}
-	err = db.DB.Updates(&post).Error
+	err = db.DB.Create(&comment).Error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
 		})
 		return
 	}
-	c.JSON(http.StatusOK, post)
-}
-
-func DeletePost(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("post_id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err,
-		})
-		return
-	}
-	post, err := models.PostGet(id, db.DB)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err,
-		})
-		return
-	}
-	err = db.DB.Delete(&post).Error
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err,
-		})
-		return
-	}
-	c.JSON(http.StatusCreated, gin.H{
-		"status": "ok",
-	})
+	c.JSONP(http.StatusOK, comment)
 }
