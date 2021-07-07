@@ -1,6 +1,6 @@
 package models
 
-import "go_practice/sample-api/db"
+import "github.com/takumines/go_practice/sample-api/db"
 
 type Post struct {
 	Id      int    `json:"id"`

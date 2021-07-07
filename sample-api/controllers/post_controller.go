@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"go_practice/sample-api/db"
-	"go_practice/sample-api/models"
 	"net/http"
 	"strconv"
+
+	"github.com/takumines/go_practice/sample-api/db"
+	"github.com/takumines/go_practice/sample-api/models"
 
 	"github.com/gin-gonic/gin"
 )

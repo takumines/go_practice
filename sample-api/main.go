@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go_practice/sample-api/db"
-	"go_practice/sample-api/routes"
+	"github.com/takumines/go_practice/sample-api/db"
+	"github.com/takumines/go_practice/sample-api/routes"
 
 	"github.com/gin-gonic/gin"
 )

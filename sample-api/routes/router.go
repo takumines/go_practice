@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"go_practice/sample-api/controllers"
+	"github.com/takumines/go_practice/sample-api/controllers"
 
 	"github.com/gin-gonic/gin"
 )
