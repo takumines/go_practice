@@ -22,6 +22,6 @@ func PostAll(db *gorm.DB) (posts []Post, err error) {
 
 func PostGet(id int, db *gorm.DB) (post Post, err error) {
 	post = Post{}
-	err = db.First(&post, id).Error
+	err = db.Preload("Comments").First(&post, id).Error
 	return
 }

@@ -93,3 +93,89 @@ func CreateComment(c *gin.Context) {
 	}
 	c.JSONP(http.StatusOK, comment)
 }
+
+func UpdateComment(c *gin.Context) {
+	postId, err := strconv.Atoi(c.Param("post_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	post, err := models.PostGet(postId, db.DB)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	commentId, err := strconv.Atoi(c.Param("comment_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	comment, err := models.CommentGet(commentId, &post, db.DB)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	if err := c.Bind(&comment); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	err = db.DB.Updates(&comment).Error
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, comment)
+}
+
+func DeleteComment(c *gin.Context) {
+	postId, err := strconv.Atoi(c.Param("post_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	post, err := models.PostGet(postId, db.DB)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	commentId, err := strconv.Atoi(c.Param("comment_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	comment, err := models.CommentGet(commentId, &post, db.DB)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	err = db.DB.Unscoped().Delete(&comment).Error
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"status": "ok",
+	})
+}

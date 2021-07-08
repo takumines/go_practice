@@ -16,4 +16,6 @@ func Setup(router *gin.Engine) {
 	router.GET("/posts/:post_id/comments", controllers.IndexComment)
 	router.GET("/posts/:post_id/comments/:comment_id", controllers.ShowComment)
 	router.POST("/posts/:post_id/comments", controllers.CreateComment)
+	router.PUT("/posts/:post_id/comments/:comment_id", controllers.UpdateComment)
+	router.DELETE("/posts/:post_id/comments/:comment_id", controllers.DeleteComment)
 }

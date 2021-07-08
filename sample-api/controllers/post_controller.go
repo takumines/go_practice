@@ -99,7 +99,7 @@ func DeletePost(c *gin.Context) {
 		})
 		return
 	}
-	err = db.DB.Delete(&post).Error
+	err = db.DB.Unscoped().Delete(&post).Error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
