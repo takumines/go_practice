@@ -9,7 +9,7 @@ type Comment struct {
 	Author  string `json:"author"`
 }
 
-func CommentAll(post *Post, db *gorm.DB) (comments []Comment, err error) {
+func AllComment(post *Post, db *gorm.DB) (comments []Comment, err error) {
 	rows, err := db.Where(&Comment{PostID: post.ID}).Find(&comments).Rows()
 	if err != nil {
 		return
@@ -18,7 +18,7 @@ func CommentAll(post *Post, db *gorm.DB) (comments []Comment, err error) {
 	return
 }
 
-func CommentGet(id int, post *Post, db *gorm.DB) (comment Comment, err error) {
+func GetComment(id int, post *Post, db *gorm.DB) (comment Comment, err error) {
 	comment = Comment{}
 	err = db.Where(&Comment{PostID: post.ID}).First(&comment, id).Error
 	return

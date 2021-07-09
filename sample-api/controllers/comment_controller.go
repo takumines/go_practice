@@ -26,7 +26,7 @@ func IndexComment(c *gin.Context) {
 		})
 		return
 	}
-	comments, _ := models.CommentAll(&post, db.DB)
+	comments, _ := models.AllComment(&post, db.DB)
 	c.JSON(http.StatusOK, comments)
 }
 
@@ -53,7 +53,7 @@ func ShowComment(c *gin.Context) {
 		return
 	}
 
-	comment, err := models.CommentGet(commentId, &post, db.DB)
+	comment, err := models.GetComment(commentId, &post, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
@@ -119,7 +119,7 @@ func UpdateComment(c *gin.Context) {
 		return
 	}
 	//TODO: CommentGetではpostに変更を加えることはないので参照渡しする必要はない
-	comment, err := models.CommentGet(commentId, &post, db.DB)
+	comment, err := models.GetComment(commentId, &post, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
@@ -164,7 +164,7 @@ func DeleteComment(c *gin.Context) {
 		})
 		return
 	}
-	comment, err := models.CommentGet(commentId, &post, db.DB)
+	comment, err := models.GetComment(commentId, &post, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
