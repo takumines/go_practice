@@ -8,14 +8,15 @@ import (
 
 func Setup(router *gin.Engine) {
 	router.GET("/posts", controllers.IndexPost)
-	router.GET("/posts/:post_id", controllers.ShowPost)
 	router.POST("/posts", controllers.CreatePost)
+	router.GET("/posts/:post_id", controllers.ShowPost)
 	router.PUT("/posts/:post_id", controllers.UpdatePost)
 	router.DELETE("/posts/:post_id", controllers.DeletePost)
 
-	router.GET("/posts/:post_id/comments", controllers.IndexComment)
-	router.GET("/posts/:post_id/comments/:comment_id", controllers.ShowComment)
-	router.POST("/posts/:post_id/comments", controllers.CreateComment)
-	router.PUT("/posts/:post_id/comments/:comment_id", controllers.UpdateComment)
-	router.DELETE("/posts/:post_id/comments/:comment_id", controllers.DeleteComment)
+	posts := router.Group("/posts/:post_id")
+	posts.GET("/comments", controllers.IndexComment)
+	posts.POST("/comments", controllers.CreateComment)
+	posts.GET("/comments/:comment_id", controllers.ShowComment)
+	posts.PUT("/comments/:comment_id", controllers.UpdateComment)
+	posts.DELETE("/comments/:comment_id", controllers.DeleteComment)
 }
