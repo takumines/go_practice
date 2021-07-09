@@ -9,7 +9,7 @@ import (
 
 func main() {
 	route := gin.Default()
-	db.Init()
+	db.Setup()
 	routes.Setup(route)
 	if err := route.Run(":8080"); err != nil {
 		panic(err)
