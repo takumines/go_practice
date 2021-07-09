@@ -10,6 +10,8 @@ import (
 )
 
 func IndexComment(c *gin.Context) {
+	// post_idをでpostのデータ取得せずに、post_idを元にcommentモデルを取得する
+	// もしくはEager Loadを利用する
 	id, err := strconv.Atoi(c.Param("post_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -17,7 +19,7 @@ func IndexComment(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.PostGet(id, db.DB)
+	post, err := models.GetPost(id, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
@@ -43,7 +45,7 @@ func ShowComment(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.PostGet(postId, db.DB)
+	post, err := models.GetPost(postId, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
@@ -70,7 +72,7 @@ func CreateComment(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.PostGet(id, db.DB)
+	post, err := models.GetPost(id, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
@@ -102,7 +104,7 @@ func UpdateComment(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.PostGet(postId, db.DB)
+	post, err := models.GetPost(postId, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
@@ -116,6 +118,7 @@ func UpdateComment(c *gin.Context) {
 		})
 		return
 	}
+	//TODO: CommentGetではpostに変更を加えることはないので参照渡しする必要はない
 	comment, err := models.CommentGet(commentId, &post, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -147,7 +150,7 @@ func DeleteComment(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.PostGet(postId, db.DB)
+	post, err := models.GetPost(postId, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,

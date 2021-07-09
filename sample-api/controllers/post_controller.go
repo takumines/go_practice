@@ -11,7 +11,7 @@ import (
 )
 
 func IndexPost(c *gin.Context) {
-	posts, _ := models.PostAll(db.DB)
+	posts, _ := models.AllPost(db.DB)
 
 	c.JSON(http.StatusOK, posts)
 }
@@ -24,7 +24,7 @@ func ShowPost(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.PostGet(id, db.DB)
+	post, err := models.GetPost(id, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
@@ -61,7 +61,7 @@ func UpdatePost(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.PostGet(id, db.DB)
+	post, err := models.GetPost(id, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
@@ -92,7 +92,7 @@ func DeletePost(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.PostGet(id, db.DB)
+	post, err := models.GetPost(id, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
