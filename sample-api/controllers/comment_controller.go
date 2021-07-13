@@ -19,14 +19,13 @@ func IndexComment(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.GetPost(id, db.DB)
-	if err != nil {
+	if err := models.CheckPost(id, db.DB); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err,
+			"message": "post not found",
 		})
 		return
 	}
-	comments, _ := models.AllComment(&post, db.DB)
+	comments, _ := models.AllComment(id, db.DB)
 	c.JSON(http.StatusOK, comments)
 }
 
@@ -38,6 +37,12 @@ func ShowComment(c *gin.Context) {
 		})
 		return
 	}
+	if err := models.CheckPost(postId, db.DB); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "post not found",
+		})
+		return
+	}
 	commentId, err := strconv.Atoi(c.Param("comment_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -45,15 +50,8 @@ func ShowComment(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.GetPost(postId, db.DB)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err,
-		})
-		return
-	}
 
-	comment, err := models.GetComment(commentId, &post, db.DB)
+	comment, err := models.GetComment(postId, commentId, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
@@ -104,13 +102,14 @@ func UpdateComment(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.GetPost(postId, db.DB)
-	if err != nil {
+
+	if err := models.CheckPost(postId, db.DB); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err,
+			"message": "post not found",
 		})
 		return
 	}
+
 	commentId, err := strconv.Atoi(c.Param("comment_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -118,8 +117,8 @@ func UpdateComment(c *gin.Context) {
 		})
 		return
 	}
-	//TODO: CommentGetではpostに変更を加えることはないので参照渡しする必要はない
-	comment, err := models.GetComment(commentId, &post, db.DB)
+
+	comment, err := models.GetComment(postId, commentId, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
@@ -150,13 +149,14 @@ func DeleteComment(c *gin.Context) {
 		})
 		return
 	}
-	post, err := models.GetPost(postId, db.DB)
-	if err != nil {
+
+	if err := models.CheckPost(postId, db.DB); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err,
+			"message": "post not found",
 		})
 		return
 	}
+
 	commentId, err := strconv.Atoi(c.Param("comment_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -164,14 +164,16 @@ func DeleteComment(c *gin.Context) {
 		})
 		return
 	}
-	comment, err := models.GetComment(commentId, &post, db.DB)
+
+	comment, err := models.GetComment(postId, commentId, db.DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
 		})
 		return
 	}
-	err = db.DB.Unscoped().Delete(&comment).Error
+
+	err = db.DB.Delete(&comment).Error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err,
